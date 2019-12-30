@@ -77,7 +77,7 @@ class AirFresh extends HTMLElement {
       }
 
       // display点击
-      dialog.querySelector('.var-led').onclick = () => {
+      dialog.querySelector('.var-ptc_on').onclick = () => {
         let ledState = attrs['display']
         // 如果当前开就关
         hass.callService('fan', ledState ? 'xiaomi_miio_set_led_off' : 'xiaomi_miio_set_led_on', {
