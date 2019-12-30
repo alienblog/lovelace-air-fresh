@@ -107,7 +107,7 @@ class AirFresh extends HTMLElement {
       mode: attrs['mode'],
       aqi: attrs['pm25'],
       filter_intermediate: attrs['filter_intermediate'],
-      temperature: attrs['temperature_outside'] || '',
+      co2: attrs['co2'] || '',
       filter_efficient: attrs['filter_efficient'] || '',
       state: state.state
     })
@@ -7121,8 +7121,8 @@ class AirFresh extends HTMLElement {
     <p class="attr-value var-filter_efficient">30</p>
   </div>
   <div class="attr">
-    <p class="attr-title">温度(&#8451;)</p>
-    <p class="attr-value var-temperature">30</p>
+    <p class="attr-title">CO2(ppm)</p>
+    <p class="attr-value var-co2">30</p>
   </div>
   </div>
   <div class="op-row">
@@ -7158,7 +7158,7 @@ class AirFresh extends HTMLElement {
   // 设置UI值
   setUI(airboxb, { title, mode, aqi,
     filter_intermediate,
-    temperature,
+    co2,
     filter_efficient, state }) {
 
     // div.classList.forEach(key => {
@@ -7208,7 +7208,7 @@ class AirFresh extends HTMLElement {
     airboxb.querySelector('.var-mode').textContent = modeName
     airboxb.querySelector('.var-aqi').textContent = aqi
     airboxb.querySelector('.var-filter_intermediate').textContent = filter_intermediate
-    airboxb.querySelector('.var-temperature').textContent = temperature
+    airboxb.querySelector('.var-co2').textContent = co2
     airboxb.querySelector('.var-filter_efficient').textContent = filter_efficient
     //状态
     let activeElement = airboxb.querySelector('.pm')
