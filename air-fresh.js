@@ -107,7 +107,7 @@ class AirFresh extends HTMLElement {
       mode: attrs['mode'],
       aqi: attrs['pm25'],
       filter_intermediate: attrs['filter_intermediate'],
-      temperature: temperature || '',
+      temperature: attrs['temperature_outside'] || '',
       filter_efficient: attrs['filter_efficient'] || '',
       state: state.state
     })
