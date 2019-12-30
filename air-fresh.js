@@ -7,7 +7,7 @@
  * @LastEditTime  : 2019-10-13 11:45:55
  */
 
-class AirFilter extends HTMLElement {
+class AirFresh extends HTMLElement {
   set hass(hass) {
 
     const entityId = this.config.entity;
@@ -15,15 +15,15 @@ class AirFilter extends HTMLElement {
     const myname = this.config.name;
     const state = hass.states[entityId];
     const attrs = state.attributes;
-    const temperature = hass.states[this.config.temperature].state;
-    const humidity = hass.states[this.config.humidity].state;
+    // const temperature = hass.states[this.config.temperature].state;
+    // const humidity = hass.states[this.config.humidity].state;
 
     if (!this.card) {
 
       //let root = this.attachShadow({ mode: 'closed' });
 
       let card = document.createElement('ha-card');
-      card.className = 'air-filter'
+      card.className = 'air-fresh'
 
 
 
@@ -76,9 +76,9 @@ class AirFilter extends HTMLElement {
         dialog.style.display = 'none'
       }
 
-      // led点击
+      // display点击
       dialog.querySelector('.var-led').onclick = () => {
-        let ledState = attrs['led']
+        let ledState = attrs['display']
         // 如果当前开就关
         hass.callService('fan', ledState ? 'xiaomi_miio_set_led_off' : 'xiaomi_miio_set_led_on', {
           entity_id: entityId
@@ -92,28 +92,28 @@ class AirFilter extends HTMLElement {
 
       // 添加样式
       let styleElement = document.createElement('style');
-      styleElement.innerHTML = `.air-filter{position: relative;height: 340px;overflow: hidden; width: 100%;}
+      styleElement.innerHTML = `.air-fresh{position: relative;height: 340px;overflow: hidden; width: 100%;}
       ${style}`;
       card.appendChild(styleElement);
 
       this.card = card;
-      
+
       this.appendChild(card);
     }
 
     //设置值
-    this.setUI(this.card.querySelector('.air-filter-panel'), {
+    this.setUI(this.card.querySelector('.air-fresh-panel'), {
       title: myname || attrs['friendly_name'],
       mode: attrs['mode'],
-      aqi: attrs['aqi'],
-      filter_life_remaining: attrs['filter_life_remaining'],
+      aqi: attrs['pm25'],
+      filter_intermediate: attrs['filter_intermediate'],
       temperature: temperature || '',
-      humidity: humidity || '',
+      filter_efficient: attrs['filter_efficient'] || '',
       state: state.state
     })
     //设置更多信息值
     this.setDialog(this.card.querySelector('.dialog'), {
-      filter_hours_used: attrs['filter_hours_used'] || 0,
+      fresh_hours_used: attrs['fresh_hours_used'] || 0,
       purify_volume: attrs['purify_volume'] || 0,
       led: attrs['led'] ? '开启' : '关闭'
     })
@@ -7008,14 +7008,14 @@ class AirFilter extends HTMLElement {
   animation-delay: 2269ms;
   }
   `
-  
-  
+
+
     //创建背景效果
     let oFragmeng = document.createDocumentFragment()
     let style = document.createElement('style')
     style.innerHTML = styleValue
     oFragmeng.appendChild(style)
-  
+
     for (var i = 0; i < 200; i++) {
       let cc = document.createElement("div");
       cc.className = 'circle-container'
@@ -7031,9 +7031,9 @@ class AirFilter extends HTMLElement {
   }
   /*********************************** UI设置 ************************************/
   getUI() {
-  
+
     let airboxa = document.createElement('div')
-    airboxa.className = 'air-filter-panel'
+    airboxa.className = 'air-fresh-panel'
     airboxa.innerHTML = `
   <style>
   .icon {
@@ -7043,10 +7043,10 @@ class AirFilter extends HTMLElement {
   fill: gray;
   overflow: hidden;
   }
-  .air-filter-panel{width: 100%;}
-  .air-filter-panel{color:#eee;top:0;position: absolute;}
+  .air-fresh-panel{width: 100%;}
+  .air-fresh-panel{color:#eee;top:0;position: absolute;}
   p{padding:0;margin:0;}
-  .air-filter-panel{text-align:center;}
+  .air-fresh-panel{text-align:center;}
   .title{margin-top:20px;cursor:pointer;height: 35px;}
   .title p{font-size:18px;padding:0;margin:0;font-weight:bold;}
   .title span{font-size:12px;}
@@ -7113,16 +7113,16 @@ class AirFilter extends HTMLElement {
   </div>
   <div class="attr-row">
   <div class="attr">
-    <p class="attr-title">滤芯(%)</p>
-    <p class="attr-value var-filter_life_remaining">0</p>
+    <p class="attr-title">中效滤芯(%)</p>
+    <p class="attr-value var-filter_intermediate">0</p>
+  </div>
+  <div class="attr">
+    <p class="attr-title">高效滤芯(%)</p>
+    <p class="attr-value var-filter_efficient">30</p>
   </div>
   <div class="attr">
     <p class="attr-title">温度(&#8451;)</p>
     <p class="attr-value var-temperature">30</p>
-  </div>
-  <div class="attr">
-    <p class="attr-title">湿度(%)</p>
-    <p class="attr-value var-humidity">30</p>
   </div>
   </div>
   <div class="op-row">
@@ -7154,18 +7154,18 @@ class AirFilter extends HTMLElement {
   `
     return airboxa
   }
-  
+
   // 设置UI值
   setUI(airboxb, { title, mode, aqi,
-    filter_life_remaining,
+    filter_intermediate,
     temperature,
-    humidity, state }) {
-  
+    filter_efficient, state }) {
+
     // div.classList.forEach(key => {
     //   div.classList.remove(key)
     // })
-    // div.classList.add('air-filter-panel')
-  
+    // div.classList.add('air-fresh-panel')
+
     // 模式
     const modeObj = {
       'auto': '自动模式',
@@ -7175,7 +7175,7 @@ class AirFilter extends HTMLElement {
     const modeName = modeObj[mode]
     // 质量
     let quality = '优'
-  
+
     if (aqi < 50) {
       quality = '优'
       airboxb.classList.add('level-1')
@@ -7200,16 +7200,16 @@ class AirFilter extends HTMLElement {
       quality = '严重污染'
       airboxb.classList.add('level-6')
     }
-  
-  
-  
+
+
+
     airboxb.querySelector('.var-title').textContent = title
     airboxb.querySelector('.var-quality').textContent = quality
     airboxb.querySelector('.var-mode').textContent = modeName
     airboxb.querySelector('.var-aqi').textContent = aqi
-    airboxb.querySelector('.var-filter_life_remaining').textContent = filter_life_remaining
+    airboxb.querySelector('.var-filter_intermediate').textContent = filter_intermediate
     airboxb.querySelector('.var-temperature').textContent = temperature
-    airboxb.querySelector('.var-humidity').textContent = humidity
+    airboxb.querySelector('.var-filter_efficient').textContent = filter_efficient
     //状态
     let activeElement = airboxb.querySelector('.pm')
     if (state === 'on') {
@@ -7218,9 +7218,9 @@ class AirFilter extends HTMLElement {
         const bgdiv = airboxb.querySelector('.bg-on');
         const cont = bgdiv.querySelector('.container');
         const container = this.getBg()
-        if(!cont){
+        if (!cont) {
           airboxb.querySelector('.bg-on').appendChild(container)
-        } 
+        }
       }
     } else {
       activeElement.classList.remove('active')
@@ -7254,9 +7254,9 @@ class AirFilter extends HTMLElement {
       activeElement.classList.remove('active')
     }
   }
-  
+
   /*********************************** UI设置 ************************************/
-  
+
   /********************弹窗信息**************************/
   getDialog() {
     let airboxc = document.createElement('div')
@@ -7273,11 +7273,11 @@ class AirFilter extends HTMLElement {
       <div class="dialog-panel">
         <div class="dialog-attr">
           <p class="dialog-title">累计运行时间(小时)</p>
-          <p class="dialog-value var-filter_hours_used">0</p>
+          <p class="dialog-value var-fresh_hours_used">0</p>
         </div>
         <div class="dialog-attr">
           <p class="dialog-title">累计运行时间(天)</p>
-          <p class="dialog-value var-filter_days_used">0</p>
+          <p class="dialog-value var-fresh_days_used">0</p>
         </div>
         <div class="dialog-attr">
           <p class="dialog-title">累计净化空气量(㎥)</p>
@@ -7294,21 +7294,21 @@ class AirFilter extends HTMLElement {
     `
     return airboxc
   }
-  
-  setDialog(airboxd, { filter_hours_used, purify_volume, led }) {
-    airboxd.querySelector('.var-filter_hours_used').textContent = filter_hours_used
+
+  setDialog(airboxd, { fresh_hours_used, purify_volume, led }) {
+    airboxd.querySelector('.var-fresh_hours_used').textContent = fresh_hours_used
     airboxd.querySelector('.var-purify_volume').textContent = purify_volume
-    airboxd.querySelector('.var-filter_days_used').textContent = Math.ceil(filter_hours_used / 24)
+    airboxd.querySelector('.var-fresh_days_used').textContent = Math.ceil(fresh_hours_used / 24)
     airboxd.querySelector('.var-led').textContent = led
   }
-  
+
   /**********************弹窗信息************************/
-  
+
   // 加入日志开关
   log() {
     // console.log(...arguments)
   }
-  
+
 }
 
-customElements.define('air-filter', AirFilter);
+customElements.define('air-fresh', AirFresh);
