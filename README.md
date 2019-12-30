@@ -1,5 +1,6 @@
 # 米家新风机的HASS卡片
 
+  适配 [HACS新风机插件](https://github.com/alienblog/mi-airfresh)
 
 ```
 // 引入
@@ -22,14 +23,14 @@ type: 'custom:air-fresh'
 entity: fan.xiaomi_miio_device
 style: >-
   .air-fresh-panel{
-    background-image: url(https://c1.mifile.cn/f/i/16/chain/air2s/mj-mtair2s-atlas-04.jpg);
+    background-image: url(https://i1.mifile.cn/f/i/16/chain/fresh-air-ventilator/fresh-16-2.jpg);
     background-size: cover;
     background-position: -10px 0;
   }
 
 ```
 
-![](01.gif)
+![](01.png)
 
 ## 更新
 + 修复了卡片冲突的问题
