@@ -53,14 +53,14 @@ class AirFresh extends HTMLElement {
         this.log('睡眠')
         hass.callService('fan', 'set_speed', {
           entity_id: entityId,
-          speed: 'Silent'
+          speed: 'Sleep'
         });
       }
       ui.querySelector('.var-favorite').onclick = () => {
         this.log('最爱')
         hass.callService('fan', 'set_speed', {
           entity_id: entityId,
-          speed: 'Favorite'
+          speed: 'Favourite'
         });
       }
       ui.querySelector('.var-title').onclick = () => {
@@ -113,9 +113,10 @@ class AirFresh extends HTMLElement {
     })
     //设置更多信息值
     this.setDialog(this.card.querySelector('.dialog'), {
-      fresh_hours_used: attrs['fresh_hours_used'] || 0,
-      purify_volume: attrs['purify_volume'] || 0,
-      led: attrs['led'] ? '开启' : '关闭'
+      temperature_outside: attrs['temperature_outside'] || 0,
+      control_speed: attrs['control_speed'] || 0,
+      ptc_level: attrs['ptc_level'] || '-',
+      ptc_on: attrs['ptc_on'] ? '开启' : '关闭'
     })
   }
 
@@ -7169,8 +7170,8 @@ class AirFresh extends HTMLElement {
     // 模式
     const modeObj = {
       'auto': '自动模式',
-      'silent': '睡眠模式',
-      'favorite': '最爱模式'
+      'sleep': '睡眠模式',
+      'favourite': '最爱模式'
     }
     const modeName = modeObj[mode]
     // 质量
@@ -7237,7 +7238,7 @@ class AirFresh extends HTMLElement {
     }
     // 睡眠模式
     activeElement = airboxb.querySelector('.var-silent')
-    if (mode == 'silent') {
+    if (mode == 'sleep') {
       if (activeElement.classList.contains('active') === false) {
         activeElement.classList.add('active')
       }
@@ -7246,7 +7247,7 @@ class AirFresh extends HTMLElement {
     }
     // 最爱模式
     activeElement = airboxb.querySelector('.var-favorite')
-    if (mode == 'favorite') {
+    if (mode == 'favourite') {
       if (activeElement.classList.contains('active') === false) {
         activeElement.classList.add('active')
       }
@@ -7272,20 +7273,20 @@ class AirFresh extends HTMLElement {
       </style>
       <div class="dialog-panel">
         <div class="dialog-attr">
-          <p class="dialog-title">累计运行时间(小时)</p>
-          <p class="dialog-value var-fresh_hours_used">0</p>
+          <p class="dialog-title">入口温度</p>
+          <p class="dialog-value var-temperature_outside">0</p>
         </div>
         <div class="dialog-attr">
-          <p class="dialog-title">累计运行时间(天)</p>
-          <p class="dialog-value var-fresh_days_used">0</p>
+          <p class="dialog-title">辅热等级</p>
+          <p class="dialog-value var-ptc_level">0</p>
         </div>
         <div class="dialog-attr">
-          <p class="dialog-title">累计净化空气量(㎥)</p>
-          <p class="dialog-value var-purify_volume">0</p>
+          <p class="dialog-title">速度</p>
+          <p class="dialog-value var-control_speed">0</p>
         </div>
         <div class="dialog-attr">
-          <p class="dialog-title">面板LED灯</p>
-          <p class="dialog-value var-led">开启</p>
+          <p class="dialog-title">辅热</p>
+          <p class="dialog-value var-ptc_on">开启</p>
         </div>          
       </div>
       <div class="dialog-close" style="width:100%;padding:20px 0;border-right:none;color:white;text-shadow:0 0 10px #9e9e9e;cursor:pointer;font-size:20px;">
@@ -7295,11 +7296,11 @@ class AirFresh extends HTMLElement {
     return airboxc
   }
 
-  setDialog(airboxd, { fresh_hours_used, purify_volume, led }) {
-    airboxd.querySelector('.var-fresh_hours_used').textContent = fresh_hours_used
-    airboxd.querySelector('.var-purify_volume').textContent = purify_volume
-    airboxd.querySelector('.var-fresh_days_used').textContent = Math.ceil(fresh_hours_used / 24)
-    airboxd.querySelector('.var-led').textContent = led
+  setDialog(airboxd, { temperature_outside, control_speed, ptc_level, ptc_on }) {
+    airboxd.querySelector('.var-temperature_outside').textContent = temperature_outside
+    airboxd.querySelector('.var-control_speed').textContent = control_speed
+    airboxd.querySelector('.var-ptc_level').textContent = ptc_level
+    airboxd.querySelector('.var-ptc_on').textContent = ptc_on
   }
 
   /**********************弹窗信息************************/
